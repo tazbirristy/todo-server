@@ -94,19 +94,28 @@ async function run() {
       const result = await tasksCollection.deleteOne(filter);
       res.send(result);
     });
-
-    app.put("/comments/:id", async (req, res) => {
-      const commentId = req.body;
-      const id = commentId.id;
+    // update task get
+    app.get("/task/:id", async (req, res) => {
+      const id = req.params.id;
       const filter = { _id: ObjectId(id) };
-      const comment = req.body;
-      const comm = comment.comm;
-      const updatedDoc = {
+      const result = await tasksCollection.findOne(filter);
+      res.send(result);
+    });
+
+    // update task Edit
+    app.put("/task/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const review = req.body;
+      // const option = { upsert: true };
+      const updatedEdit = {
         $set: {
-          comment: comm,
+          taskName: review.taskName,
+          description: review.description,
         },
       };
-      const updatedResult = await tasksCollection.updateOne(filter, updatedDoc);
+      const result = await tasksCollection.updateOne(filter, updatedEdit);
+      res.send(result);
     });
   } finally {
   }
